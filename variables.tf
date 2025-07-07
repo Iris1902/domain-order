@@ -20,34 +20,9 @@ variable "BRANCH_NAME" {
   default = "dev"
 }
 
-variable "DB_CONNECTION" {
+variable "MONGO_URL" {
   type        = string
-  description = "Tipo de conexión de la base de datos"
-}
-
-variable "DB_HOST" {
-  type        = string
-  description = "Host de la base de datos"
-}
-
-variable "DB_PORT" {
-  type        = string
-  description = "Puerto de la base de datos"
-}
-
-variable "DB_DATABASE" {
-  type        = string
-  description = "Nombre de la base de datos"
-}
-
-variable "DB_USERNAME" {
-  type        = string
-  description = "Usuario de la base de datos"
-}
-
-variable "DB_PASSWORD" {
-  type        = string
-  description = "Contraseña de la base de datos"
+  description = "URL de conexión a MongoDB"
 }
 
 variable "vpc_id" {

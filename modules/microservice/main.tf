@@ -18,10 +18,10 @@ resource "aws_security_group" "sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  # Puertos de microservicios (6000-6003)
+  # Puertos de microservicios (4000-4003)
   ingress {
-    from_port   = 6000
-    to_port     = 6003
+    from_port   = 4000
+    to_port     = 4003
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
@@ -51,20 +51,15 @@ resource "aws_launch_template" "lt" {
   key_name      = aws_key_pair.key.key_name
   vpc_security_group_ids = [aws_security_group.sg.id]
   user_data = base64encode(templatefile("${path.module}/docker-compose.tpl", {
-    image_user_create = "ievinan/microservice-product-create:${var.branch}",
-    port_user_create  = 6000,
-    image_user_read   = "ievinan/microservice-product-read:${var.branch}",
-    port_user_read    = 6001,
-    image_user_update = "ievinan/microservice-product-update:${var.branch}",
-    port_user_update  = 6002,
-    image_user_delete = "ievinan/microservice-product-delete:${var.branch}",
-    port_user_delete  = 6003,
-    db_connection = var.db_connection,
-    db_host       = var.db_host,
-    db_port       = var.db_port,
-    db_database   = var.db_database,
-    db_username   = var.db_username,
-    db_password   = var.db_password
+    image_order_create = "ievinan/microservice-order-create:${var.branch}",
+    port_order_create  = 4000,
+    image_order_read   = "ievinan/microservice-order-read:${var.branch}",
+    port_order_read    = 4001,
+    image_order_add    = "ievinan/microservice-order-add:${var.branch}",
+    port_order_add     = 4002,
+    image_order_delete = "ievinan/microservice-order-delete:${var.branch}",
+    port_order_delete  = 4003,
+    mongo_url          = var.mongo_url
   }))
 }
 
@@ -78,11 +73,11 @@ resource "aws_lb" "alb" {
 
 resource "aws_lb_target_group" "tg_create" {
   name     = "${var.name}-tg-create"
-  port     = 6000
+  port     = 4000
   protocol = "HTTP"
   vpc_id   = var.vpc_id
   health_check {
-    path                = "/api/products-create/health"
+    path                = "/order-create/health"
     interval            = 30
     timeout             = 5
     healthy_threshold   = 2
@@ -93,11 +88,11 @@ resource "aws_lb_target_group" "tg_create" {
 
 resource "aws_lb_target_group" "tg_read" {
   name     = "${var.name}-tg-read"
-  port     = 6001
+  port     = 4001
   protocol = "HTTP"
   vpc_id   = var.vpc_id
   health_check {
-    path                = "/api/products-read/health"
+    path                = "/order-read/health"
     interval            = 30
     timeout             = 5
     healthy_threshold   = 2
@@ -106,13 +101,13 @@ resource "aws_lb_target_group" "tg_read" {
   }
 }
 
-resource "aws_lb_target_group" "tg_update" {
-  name     = "${var.name}-tg-update"
-  port     = 6002
+resource "aws_lb_target_group" "tg_add" {
+  name     = "${var.name}-tg-add"
+  port     = 4002
   protocol = "HTTP"
   vpc_id   = var.vpc_id
   health_check {
-    path                = "/api/products-update/health"
+    path                = "/order-add/health"
     interval            = 30
     timeout             = 5
     healthy_threshold   = 2
@@ -123,11 +118,11 @@ resource "aws_lb_target_group" "tg_update" {
 
 resource "aws_lb_target_group" "tg_delete" {
   name     = "${var.name}-tg-delete"
-  port     = 6003
+  port     = 4003
   protocol = "HTTP"
   vpc_id   = var.vpc_id
   health_check {
-    path                = "/api/products-delete/health"
+    path                = "/order-delete/health"
     interval            = 30
     timeout             = 5
     healthy_threshold   = 2
@@ -151,7 +146,7 @@ resource "aws_lb_listener_rule" "rule_create" {
   priority     = 100
   condition {
     path_pattern {
-      values = ["/api/products-create*"]
+      values = ["/order-create*"]
     }
   }
   action {
@@ -165,7 +160,7 @@ resource "aws_lb_listener_rule" "rule_read" {
   priority     = 101
   condition {
     path_pattern {
-      values = ["/api/products-read*"]
+      values = ["/order-read*"]
     }
   }
   action {
@@ -174,17 +169,17 @@ resource "aws_lb_listener_rule" "rule_read" {
   }
 }
 
-resource "aws_lb_listener_rule" "rule_update" {
+resource "aws_lb_listener_rule" "rule_add" {
   listener_arn = aws_lb_listener.listener.arn
   priority     = 102
   condition {
     path_pattern {
-      values = ["/api/products-update*"]
+      values = ["/order-add*"]
     }
   }
   action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.tg_update.arn
+    target_group_arn = aws_lb_target_group.tg_add.arn
   }
 }
 
@@ -193,7 +188,7 @@ resource "aws_lb_listener_rule" "rule_delete" {
   priority     = 103
   condition {
     path_pattern {
-      values = ["/api/products-delete*"]
+      values = ["/order-delete*"]
     }
   }
   action {
@@ -214,7 +209,7 @@ resource "aws_autoscaling_group" "asg" {
   target_group_arns    = [
     aws_lb_target_group.tg_create.arn,
     aws_lb_target_group.tg_read.arn,
-    aws_lb_target_group.tg_update.arn,
+    aws_lb_target_group.tg_add.arn,
     aws_lb_target_group.tg_delete.arn
   ]
   lifecycle {

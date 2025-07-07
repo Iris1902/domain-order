@@ -3,44 +3,49 @@ variable "name" {
   type        = string
 }
 
-variable "image_user_create" {
-  description = "Imagen Docker para product-create"
+variable "image_order_create" {
+  description = "Imagen Docker para order-create"
   type        = string
 }
 
-variable "port_user_create" {
-  description = "Puerto para product-create"
+variable "port_order_create" {
+  description = "Puerto para order-create"
   type        = number
 }
 
-variable "image_user_read" {
-  description = "Imagen Docker para product-read"
+variable "image_order_read" {
+  description = "Imagen Docker para order-read"
   type        = string
 }
 
-variable "port_user_read" {
-  description = "Puerto para product-read"
+variable "port_order_read" {
+  description = "Puerto para order-read"
   type        = number
 }
 
-variable "image_user_update" {
-  description = "Imagen Docker para product-update"
+variable "image_order_add" {
+  description = "Imagen Docker para order-add"
   type        = string
 }
 
-variable "port_user_update" {
-  description = "Puerto para product-update"
+variable "port_order_add" {
+  description = "Puerto para order-add"
   type        = number
 }
 
-variable "image_user_delete" {
-  description = "Imagen Docker para product-delete"
+variable "image_order_delete" {
+  description = "Imagen Docker para order-delete"
   type        = string
 }
 
-variable "port_user_delete" {
-  description = "Puerto para product-delete"
+variable "port_order_delete" {
+  description = "Puerto para order-delete"
   type        = number
+}
+
+variable "mongo_url" {
+  description = "URL de conexión a MongoDB"
+  type        = string
 }
 
 variable "branch" {
@@ -61,34 +66,4 @@ variable "subnets" {
 variable "ami_id" {
   type    = string
   default = "ami-020cba7c55df1f615"
-}
-
-variable "db_connection" {
-  description = "Tipo de conexión de base de datos"
-  type        = string
-}
-
-variable "db_host" {
-  description = "Host de la base de datos"
-  type        = string
-}
-
-variable "db_port" {
-  description = "Puerto de la base de datos"
-  type        = string
-}
-
-variable "db_database" {
-  description = "Nombre de la base de datos"
-  type        = string
-}
-
-variable "db_username" {
-  description = "Usuario de la base de datos"
-  type        = string
-}
-
-variable "db_password" {
-  description = "Contraseña de la base de datos"
-  type        = string
 }
