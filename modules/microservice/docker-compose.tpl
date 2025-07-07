@@ -9,54 +9,30 @@ chmod +x /usr/local/bin/docker-compose
 cat <<EOL > /home/ubuntu/docker-compose.yml
 version: '3'
 services:
-  product-create:
-    image: ${image_user_create}
+  order-create:
+    image: ${image_order_create}
     ports:
-      - "${port_user_create}:6000"
+      - "${port_order_create}:4000"
     environment:
-      - PORT=6000
-      - DB_CONNECTION=${db_connection}
-      - DB_HOST=${db_host}
-      - DB_PORT=${db_port}
-      - DB_DATABASE=${db_database}
-      - DB_USERNAME=${db_username}
-      - DB_PASSWORD=${db_password}
-  product-read:
-    image: ${image_user_read}
+      - MONGO_URL=${mongo_url}
+  order-read:
+    image: ${image_order_read}
     ports:
-      - "${port_user_read}:6001"
+      - "${port_order_read}:4001"
     environment:
-      - PORT=6001
-      - DB_CONNECTION=${db_connection}
-      - DB_HOST=${db_host}
-      - DB_PORT=${db_port}
-      - DB_DATABASE=${db_database}
-      - DB_USERNAME=${db_username}
-      - DB_PASSWORD=${db_password}
-  product-update:
-    image: ${image_user_update}
+      - MONGO_URL=${mongo_url}
+  order-add:
+    image: ${image_order_add}
     ports:
-      - "${port_user_update}:6002"
+      - "${port_order_add}:4002"
     environment:
-      - PORT=6002
-      - DB_CONNECTION=${db_connection}
-      - DB_HOST=${db_host}
-      - DB_PORT=${db_port}
-      - DB_DATABASE=${db_database}
-      - DB_USERNAME=${db_username}
-      - DB_PASSWORD=${db_password}
-  product-delete:
-    image: ${image_user_delete}
+      - MONGO_URL=${mongo_url}
+  order-delete:
+    image: ${image_order_delete}
     ports:
-      - "${port_user_delete}:6003"
+      - "${port_order_delete}:4003"
     environment:
-      - PORT=6003
-      - DB_CONNECTION=${db_connection}
-      - DB_HOST=${db_host}
-      - DB_PORT=${db_port}
-      - DB_DATABASE=${db_database}
-      - DB_USERNAME=${db_username}
-      - DB_PASSWORD=${db_password}
+      - MONGO_URL=${mongo_url}
 EOL
 
 systemctl start docker

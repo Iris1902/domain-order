@@ -1,4 +1,4 @@
-name: Apply Terraform Changes for Domain Uers
+name: Apply Terraform Changes for Domain Orders
 
 on:
   push:
@@ -41,10 +41,10 @@ jobs:
       - name: Validate Terraform
         run: terraform validate
 
-      - name: Extraer branch del log de triggers de productos
+      - name: Extraer branch del log de triggers de orders
         id: extract-branch
         run: |
-          for log in trigger-microservice-product-create.log trigger-microservice-product-read.log trigger-microservice-product-update.log trigger-microservice-product-delete.log; do
+          for log in trigger-microservice-order-create.log trigger-microservice-order-read.log trigger-microservice-order-add.log trigger-microservice-order-delete.log; do
             if [ -f "$log" ]; then
               branch=$(grep -oP 'on branch \K[^ ]+' "$log" | head -1)
               if [ ! -z "$branch" ]; then
@@ -66,12 +66,7 @@ jobs:
             -var="AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}" \
             -var="AWS_SESSION_TOKEN=${{ secrets.AWS_SESSION_TOKEN }}" \
             -var="BRANCH_NAME=${{ env.BRANCH_NAME }}" \
-            -var="DB_CONNECTION=${{ secrets.DB_CONNECTION }}" \
-            -var="DB_HOST=${{ secrets.DB_HOST }}" \
-            -var="DB_PORT=${{ secrets.DB_PORT }}" \
-            -var="DB_DATABASE=${{ secrets.DB_DATABASE }}" \
-            -var="DB_USERNAME=${{ secrets.DB_USERNAME }}" \
-            -var="DB_PASSWORD=${{ secrets.DB_PASSWORD }}"
+            -var="MONGO_URL=${{ secrets.MONGO_URL }}"
       
       - name: Apply Terraform (con control de error)
         id: apply-tf
@@ -83,12 +78,7 @@ jobs:
             -var="AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}" \
             -var="AWS_SESSION_TOKEN=${{ secrets.AWS_SESSION_TOKEN }}" \
             -var="BRANCH_NAME=${{ env.BRANCH_NAME }}" \
-            -var="DB_CONNECTION=${{ secrets.DB_CONNECTION }}" \
-            -var="DB_HOST=${{ secrets.DB_HOST }}" \
-            -var="DB_PORT=${{ secrets.DB_PORT }}" \
-            -var="DB_DATABASE=${{ secrets.DB_DATABASE }}" \
-            -var="DB_USERNAME=${{ secrets.DB_USERNAME }}" \
-            -var="DB_PASSWORD=${{ secrets.DB_PASSWORD }}"
+            -var="MONGO_URL=${{ secrets.MONGO_URL }}"
           echo $? > tf_exit_code.txt
       - name: Set refresh flag if needed
         id: set-flag

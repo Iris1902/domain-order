@@ -20,44 +20,27 @@ variable "BRANCH_NAME" {
   default = "dev"
 }
 
-variable "DB_CONNECTION" {
+variable "MONGO_URL" {
   type        = string
-  description = "Tipo de conexión de la base de datos"
-}
-
-variable "DB_HOST" {
-  type        = string
-  description = "Host de la base de datos"
-}
-
-variable "DB_PORT" {
-  type        = string
-  description = "Puerto de la base de datos"
-}
-
-variable "DB_DATABASE" {
-  type        = string
-  description = "Nombre de la base de datos"
-}
-
-variable "DB_USERNAME" {
-  type        = string
-  description = "Usuario de la base de datos"
-}
-
-variable "DB_PASSWORD" {
-  type        = string
-  description = "Contraseña de la base de datos"
+  description = "URL de conexión a MongoDB"
 }
 
 variable "vpc_id" {
-  type    = string
-  default = "vpc-0697808a974fef452"
+  type        = string
+  default = "vpc-07ed6f622674768b4"
+  description = "VPC ID para los recursos"
 }
 
-variable "subnets" {
-  type    = list(string)
-  default = ["subnet-0049cf73cb42dc01f", "subnet-03bd5e4b54dfcfb6e"]
+variable "subnet1" {
+  type        = string
+  default = "subnet-0695499f8e7e48f1f"
+  description = "ID de la primera subnet"
+}
+
+variable "subnet2" {
+  type        = string
+  default = "subnet-05d8f02253a448f99"
+  description = "ID de la segunda subnet"
 }
 
 variable "ami_id" {
